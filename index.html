@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#05070a">
+<title>FX戦士くるみ — 30日間2000万円チャレンジ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f15'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23f5b942' font-family='sans-serif'%3E久%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════ 顶部 HUD ══════════ -->
+  <header id="hud">
+    <div class="brand">
+      <div class="brand-main"><span class="jp">FX戦士</span><span class="kr">くるみ</span></div>
+      <div class="brand-sub">30日間 2000万円チャレンジ</div>
+    </div>
+
+    <div class="hud-stats">
+      <div class="hstat main">
+        <label>净值</label>
+        <b id="h-net">¥500,000</b>
+      </div>
+      <div class="hstat">
+        <label>现金</label>
+        <b id="h-cash">¥500,000</b>
+      </div>
+      <div class="hstat">
+        <label>负债</label>
+        <b id="h-debt" class="zero">¥0</b>
+      </div>
+      <div class="hstat goal">
+        <label>目标 ¥20,000,000 <span id="h-goalpct">2.5%</span></label>
+        <div class="goalbar"><i id="h-goalbar"></i></div>
+      </div>
+    </div>
+
+    <div class="hud-clock">
+      <div class="daylabel">DAY <b id="h-day">1</b><span>/30</span></div>
+      <div class="phasepill" id="h-phase">日间交易</div>
+      <div class="timerbar"><i id="h-timer"></i></div>
+    </div>
+
+    <div class="hud-tools">
+      <button class="iconbtn" id="btn-help" data-action="help" title="玩法说明">?</button>
+      <button class="iconbtn on" id="btn-sound" data-action="sound" title="音效">♪</button>
+      <div class="speeds" id="speeds">
+        <button data-speed="33" class="on" title="默认：一天约 6 分钟">⅓×</button>
+        <button data-speed="67" title="一天约 3 分钟">⅔×</button>
+        <button data-speed="100" title="一天约 2 分钟">1×</button>
+        <button data-speed="200" title="一天约 1 分钟">2×</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════ 主体 ══════════ -->
+  <main id="main">
+
+    <section id="chartcol">
+      <nav id="tabs"></nav>
+
+      <div id="quotebar">
+        <div class="q-left">
+          <div class="q-name"><b id="q-name">澳元/日元</b><span class="tag" id="q-tag">极高风险</span></div>
+          <div class="q-blurb" id="q-blurb"></div>
+        </div>
+        <div class="q-right">
+          <div class="q-price" id="q-price">95.200</div>
+          <div class="q-chg" id="q-chg">+0.00%</div>
+        </div>
+      </div>
+
+      <div id="chartwrap">
+        <canvas id="chart"></canvas>
+        <div id="stamp"></div>
+        <div id="bhint"></div>
+        <div id="pause-overlay"><span>PAUSED</span><small>按空格继续</small></div>
+      </div>
+
+      <div id="newsticker">
+        <span class="nt-label">速報</span>
+        <div class="nt-track" id="nt-track"><div class="nt-item dim">等待开盘……</div></div>
+      </div>
+    </section>
+
+    <aside id="side">
+      <div id="kurumi">
+        <div class="avatar"><span>久</span><i class="ring"></i></div>
+        <div class="bubble"><span id="bubble-text">三十天，两千万。……做得到吗？</span></div>
+      </div>
+
+      <div id="actionbar"></div>
+
+      <div class="panel" id="trade"></div>
+
+      <div class="panel" id="positions">
+        <div class="panel-h"><span>持仓</span><span class="panel-hint" id="pos-count">0</span></div>
+        <div id="pos-list" class="pos-list"><div class="empty">还没有持仓</div></div>
+      </div>
+
+      <div class="panel" id="finance"></div>
+    </aside>
+
+  </main>
+
+  <!-- ══════════ 日志 ══════════ -->
+  <footer id="logbar">
+    <div class="log-title">交易日志</div>
+    <div class="log-scroll" id="log-scroll"></div>
+  </footer>
+
+</div>
+
+<!-- ══════════ 开场 ══════════ -->
+<div id="intro" class="screen">
+  <div class="intro-lines"></div>
+  <div class="intro-card">
+    <div class="i-kicker">30日間 2000万円チャレンジ</div>
+    <h1 class="i-title"><span>FX戦士</span><b>くるみ</b></h1>
+    <p class="i-lead">
+      你叫久留美。白天在便利店打工，晚上盯着澳元/日元的 K 线。<br>
+      三十天，五十万，做到两千万。
+    </p>
+    <ul class="i-rules">
+      <li><b>30 天</b>，每天白天 <b>120 秒</b> 实时行情，收盘自动平仓；右上角可调速（默认 ⅓×）。</li>
+      <li>夜里也能下单，但结果要等 <b>次日开盘跳空</b> 才见分晓。</li>
+      <li>基金 → 股票 → 外汇 → 杠杆，风险从低到高，<b>最高 999 倍</b>。</li>
+      <li>可以偷借父亲的 300 万，也可以去消费者金融贷款——<b>都要还</b>。</li>
+      <li>目标：净值 <b>¥20,000,000</b>。净值归零，就是 <b>空中飞人</b>。</li>
+    </ul>
+    <button id="btn-start" class="btn-start" data-action="start">开始 30 天<span>START</span></button>
+    <div class="i-foot">虚构游戏 · 不构成任何投资建议 · FX 交易可能导致巨额亏损</div>
+  </div>
+</div>
+
+<div id="overlay"></div>
+<div id="toast"></div>
+
+<script src="engine.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
